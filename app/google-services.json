@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "12361524831",
+    "firebase_url": "https://my-care-network.firebaseio.com",
+    "project_id": "my-care-network",
+    "storage_bucket": "my-care-network.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:12361524831:android:5467455a85025961469dea",
+        "android_client_info": {
+          "package_name": "com.example.mycarenetwork"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "12361524831-u79spev3r4usia4157ltrs733kqva3rh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mycarenetwork",
+            "certificate_hash": "d2e9a63a7160cc652d792a341eaf45b910ecdaef"
+          }
+        },
+        {
+          "client_id": "12361524831-ig2hcjehj0pkp3kel8l0fs2i5c1097gp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCHJi6GBxiFcP0jdv9OHkYs0uM1ISkHL70"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "12361524831-ig2hcjehj0pkp3kel8l0fs2i5c1097gp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
