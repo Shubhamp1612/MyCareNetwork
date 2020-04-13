@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="10"
-    android:background="@drawable/background"
+    android:background="@drawable/gradient"
     tools:context=".MainActivity">
 
 
@@ -21,7 +21,8 @@
             android:textSize="34sp"
             android:layout_centerInParent="true"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorAccent"/>
     </RelativeLayout>
 
     <GridLayout
@@ -174,9 +175,6 @@
 
         </androidx.cardview.widget.CardView>
 
-
-
     </GridLayout>
-
 
 </LinearLayout>
