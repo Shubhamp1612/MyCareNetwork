@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -37,6 +38,8 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText textEmail;
     private EditText textPassword;
     private EditText textConfirmPassword;
+    private EditText textEmergencyNumber;
+    private TextView textAlreadyRegistered;
     private static final String TAG = "SignUpActivity";
 
     @Override
@@ -54,11 +57,22 @@ public class SignUpActivity extends AppCompatActivity {
         textEmail = findViewById(R.id.txtEmail);
         textPassword = findViewById(R.id.txtPassword);
         textConfirmPassword = findViewById(R.id.txtConfirmPassword);
+        textEmergencyNumber = findViewById(R.id.txtEmergencyContact);
+        textAlreadyRegistered = findViewById(R.id.alreadyRegisteredBtn);
 
-                registerTextView.setOnTouchListener(new View.OnTouchListener() {
+        registerTextView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                createAccount(textEmail.getText().toString(),textPassword.getText().toString());
+                createAccount(textEmail.getText().toString(), textPassword.getText().toString());
+                return true;
+            }
+        });
+
+        textAlreadyRegistered.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
+                startActivity(intent);
                 return true;
             }
         });
@@ -66,7 +80,6 @@ public class SignUpActivity extends AppCompatActivity {
 
     private boolean validateForm() {
         boolean valid = true;
-
         String email = textEmail.getText().toString();
         if (TextUtils.isEmpty(email)) {
             textEmail.setError("Required.");
@@ -91,6 +104,29 @@ public class SignUpActivity extends AppCompatActivity {
             textConfirmPassword.setError(null);
         }
 
+        String firstName = textFirstName.getText().toString();
+        if (TextUtils.isEmpty(firstName)) {
+            textFirstName.setError("Required.");
+            valid = false;
+        } else {
+            textFirstName.setError(null);
+        }
+
+        String lastName = textLastName.getText().toString();
+        if (TextUtils.isEmpty(lastName)) {
+            textLastName.setError("Required.");
+            valid = false;
+        } else {
+            textLastName.setError(null);
+        }
+
+        String emergencyNumber = textEmergencyNumber.getText().toString();
+        if (TextUtils.isEmpty(emergencyNumber)) {
+            textEmergencyNumber.setError("Required.");
+            valid = false;
+        } else {
+            textEmergencyNumber.setError(null);
+        }
 
         return valid;
     }
@@ -102,7 +138,6 @@ public class SignUpActivity extends AppCompatActivity {
             return;
         }
 
-        // [START create_user_with_email]
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -113,28 +148,35 @@ public class SignUpActivity extends AppCompatActivity {
                             userId = mAuth.getCurrentUser().getUid();
 
                             DocumentReference documentReference = fStore.collection("users").document(userId);
-                            Map<String,Object> user = new HashMap<>();
-                            user.put("firstName",textFirstName.getText().toString());
-                            user.put("lastName",textLastName.getText().toString());
-                            user.put("email",textEmail.getText().toString());
+                            Map<String, Object> user = new HashMap<>();
+                            user.put("firstName", textFirstName.getText().toString());
+                            user.put("lastName", textLastName.getText().toString());
+                            user.put("email", textEmail.getText().toString());
+                            user.put("emergencyNumberOne", textEmergencyNumber.getText().toString());
+
                             documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
-                                    Log.d(TAG,"User Profile Created Succesfully");
+                                    Log.d(TAG, "User Profile Created Succesfully");
                                     Toast toast = Toast.makeText(SignUpActivity.this, "Account and user profile successfully: ", Toast.LENGTH_LONG);
                                     toast.show();
                                 }
                             });
-
                             Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
                             startActivity(intent);
-
-//                            FirebaseUser user = mAuth.getCurrentUser();
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(SignUpActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
+                            try {
+                                throw task.getException();
+                            } catch (FirebaseAuthUserCollisionException emailExists) {
+                                Toast.makeText(SignUpActivity.this, "Account with email already exists!",
+                                        Toast.LENGTH_SHORT).show();
+                            } catch (Exception e) {
+                                Log.w(TAG, "createUserWithEmail:failure", task.getException());
+//                                Toast.makeText(SignUpActivity.this, "Authentication failed.",
+//                                        Toast.LENGTH_SHORT).show();
+                            }
+
                         }
                     }
                 });
