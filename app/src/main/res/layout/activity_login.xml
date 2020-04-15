@@ -72,10 +72,11 @@
         android:id="@+id/registerBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Register Here."
+        android:text="Register Here"
         android:layout_above="@+id/linearLayout"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="6dp"
+        android:textSize="20dp"
         android:textColor="@color/colorAccent"/>
 
     <LinearLayout

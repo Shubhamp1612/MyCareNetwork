@@ -26,6 +26,7 @@
     </RelativeLayout>
 
     <GridLayout
+        android:id="@+id/gridHandle"
         android:rowCount="2"
         android:columnCount="2"
         android:alignmentMode="alignMargins"
@@ -36,6 +37,7 @@
         android:layout_height="0dp">
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/appointmentsBtn"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_columnWeight="1"
@@ -71,6 +73,7 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/hospitalsBtn"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_columnWeight="1"
@@ -159,7 +162,7 @@
                 android:layout_margin="16dp">
 
                 <ImageView
-                    android:src="@drawable/call_ambulance"
+                    android:src="@drawable/sos"
                     android:layout_gravity="center_horizontal"
                     android:layout_width="wrap_content"
                     android:layout_height="1in" />
@@ -167,7 +170,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Call ambulance"
+                    android:text="SOS message"
+                    android:textAlignment="center"
                     android:textSize="18sp"
                     android:textStyle="bold"/>
 
