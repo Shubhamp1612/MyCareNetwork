@@ -16,14 +16,9 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 
 public class HospitalsActivity extends AppCompatActivity {
 
-
-
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hospitals);
-//        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-//                .findFragmentById(R.id.map);
-//        mapFragment.getMapAsync(this);
     }
 
 }

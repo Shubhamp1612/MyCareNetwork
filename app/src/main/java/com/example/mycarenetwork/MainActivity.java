@@ -32,6 +32,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+
 public class MainActivity extends AppCompatActivity {
 
     private GridLayout mainGrid;
@@ -42,8 +43,17 @@ public class MainActivity extends AppCompatActivity {
     private String Longitude;
     private FirebaseUser user;
     private FirebaseFirestore fStore;
-
     private static final String TAG = "MainActivity";
+
+    public MainActivity() {
+    }
+
+    public interface OntaskCompleted{
+        void onSuccess(String Latitude, String Longitude);
+        void onfail();
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,25 +64,43 @@ public class MainActivity extends AppCompatActivity {
         fStore = FirebaseFirestore.getInstance();
         mainGrid = findViewById(R.id.gridHandle);
         String userID = user.getUid();
-        getUserProfile(userID);
+
+        if(ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+        {
+            Log.d(TAG,"Location permission granted");
+        }
+        else
+        {
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+            Toast.makeText(MainActivity.this, "Location permission not granted",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        fusedLocationClient.getLastLocation()
-                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        // Got last known location. In some rare situations this can be null.
-                        if (location != null) {
-                            // Logic to handle location object
-                            Latitude = Double.toString(location.getLatitude());
-                            Longitude = Double.toString(location.getLongitude());
-                            Log.d(TAG,"location is" + location.getLatitude() + "," + location.getLongitude());
-//                            Toast.makeText(MainActivity.this, "Location permission granted:" +location.getLatitude() + "," + location.getLongitude(),
-//                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+        getUserProfile(userID);
+        getLocation(new OntaskCompleted(){
+
+            @Override
+            public void onSuccess(String Lat, String Long) {
+                Toast.makeText(MainActivity.this, "Locaton is: " + Lat + "," + Long ,
+                        Toast.LENGTH_SHORT).show();
+                Latitude = Lat;
+                Longitude = Long;
+            }
+
+            @Override
+            public void onfail() {
+
+            }
+        });
+
         clickCardEvent(mainGrid);
     }
+
+
 
 
     @Override
@@ -92,26 +120,15 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent) ;
         }
+        else if(item.getItemId()==R.id.ManageInsuranceProviders){
+            Intent intent = new Intent(this, ManageInsProvidersActivity.class);
+            startActivity(intent) ;
+        }
         return super.onOptionsItemSelected(item);
     }
 
     private void clickCardEvent(GridLayout mainGrid)
     {
-        if(ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
-        {
-            Toast.makeText(MainActivity.this, "Location permission granted",
-                    Toast.LENGTH_SHORT).show();
-        }
-        else
-        {
-            ActivityCompat.requestPermissions(MainActivity.this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-            Toast.makeText(MainActivity.this, "Location permission not granted",
-                    Toast.LENGTH_SHORT).show();
-        }
-
-
         for(int i=0;i<mainGrid.getChildCount();i++)
         {
             CardView cardView = (CardView) mainGrid.getChildAt(i);
@@ -136,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
                                     Toast.LENGTH_SHORT).show();
 
                             SmsManager smsManager = SmsManager.getDefault();
-                            smsManager.sendTextMessage("+16692489672",null,"SOS message sent from",null,null);
+                            smsManager.sendTextMessage("+16692489672",null,"SOS message alert from location " + Latitude + "," + Longitude,null,null);
                             Toast.makeText(MainActivity.this, "message sent",
                                     Toast.LENGTH_SHORT).show();
                         }
@@ -154,7 +171,6 @@ public class MainActivity extends AppCompatActivity {
             });
         }
     }
-
 
     private void getUserProfile(String uid)
     {
@@ -179,6 +195,24 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void getLocation(final OntaskCompleted listener)
+    {
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        // Got last known location. In some rare situations this can be null.
+                        if (location != null) {
+                            // Logic to handle location object
+                            listener.onSuccess(Double.toString(location.getLatitude()),Double.toString(location.getLongitude()));
+                            Log.d(TAG,"location is" + location.getLatitude() + "," + location.getLongitude());
+//                            Toast.makeText(MainActivity.this, "Location permission granted:" +location.getLatitude() + "," + location.getLongitude(),
+//                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
 }
