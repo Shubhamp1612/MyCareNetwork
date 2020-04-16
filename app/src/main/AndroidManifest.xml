@@ -33,6 +33,8 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".HospitalsActivity" />
+        <activity android:name=".ManageInsProvidersActivity" />
+        <activity android:name=".AddProviderActivity"/>
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
